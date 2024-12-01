@@ -7,17 +7,18 @@ const form = document.getElementById('form');
 const text = document.getElementById('text');
 const amount = document.getElementById('amount');
 
-const dataTransection = [
-    {id:1, text:"ค่าขนม", amount:-100},
-    {id:2, text:"ค่าห้อง", amount:-3000},
-    {id:3, text:"เงินเดือน", amount:+18000},
-    {id:4, text:"ค่าอาหาร", amount:-500},
-    {id:5, text:"ถูกหวย", amount:+20000}
-]
+// const dataTransection = [
+//     {id:1, text:"ค่าขนม", amount:-100},
+//     {id:2, text:"ค่าห้อง", amount:-3000},
+//     {id:3, text:"เงินเดือน", amount:+18000},
+//     {id:4, text:"ค่าอาหาร", amount:-500},
+//     {id:5, text:"ถูกหวย", amount:+20000}
+// ]
 
-const transactions = dataTransection;
+let transactions = [];
 
 function init(){
+    list.innerHTML = '';
     transactions.forEach(addDataToList);
     calculateMoney();
 }
@@ -27,16 +28,17 @@ function addDataToList(transactions){
     const item = document.createElement('li');
     result = formatNumber(Math.abs(transactions.amount));
     item.classList.add(status);
-    item.innerHTML = `${transactions.text}<span>${symbol}${result}</span><button class="delete-btn">x</button>`;
+    item.innerHTML = `${transactions.text}<span>${symbol}${result}</span><button class="delete-btn" onclick="removeData(${transactions.id})">x</button>`;
     list.appendChild(item)    
-}
-function autoID(){
-    return Math.floor(Math.random()*1000000);
 }
 
 function formatNumber(num) {
     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
 }
+function autoID(){
+    return Math.floor(Math.random()*1000000);
+}
+
 function calculateMoney(){
     const amounts = transactions.map(transactions=>transactions.amount);
     //คำนวณยอดคงเหลือ
@@ -55,16 +57,23 @@ function calculateMoney(){
     money_minus.innerText = `฿` + formatNumber(expense);
    
 }
+
+function removeData(id){
+    transactions = transactions.filter(transactions=>transactions.id !== id);   
+    init();  
+}
+
 function addTransaction(e){
     e.preventDefault();
     if(text.value.trim() === '' || amount.value.trim() === ''){
         alert("กรุณาป้อนข้อมูลให้ครบ");
     }else{
          const data = {
-            id:autoID,
+            id:autoID(),
             text:text.value,
             amount:+amount.value
-         }   
+         } 
+
          transactions.push(data);  
          addDataToList(data);
          calculateMoney();
