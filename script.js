@@ -19,6 +19,7 @@ const transactions = dataTransection;
 
 function init(){
     transactions.forEach(addDataToList);
+    calculateMoney();
 }
 function addDataToList(transactions){
     const symbol = transactions.amount < 0 ? '-':'+';
@@ -28,6 +29,24 @@ function addDataToList(transactions){
     // item.innerHTML = 'ค่าซ่อมรถ <span>- ฿400</span><button class="delete-btn">x</button>';
     item.innerHTML = `${transactions.text}<span>${symbol}${Math.abs(transactions.amount)}</span><button class="delete-btn">x</button>`;
     list.appendChild(item)
+    
+}
+function calculateMoney(){
+    const amounts = transactions.map(transactions=>transactions.amount);
+    //คำนวณยอดคงเหลือ
+    const total =  amounts.reduce((result,item)=>(result+=item),0).toFixed(2);
+    // คำนวณรายรับ
+    const income = amounts.filter(item=>item>0).reduce((result,item)=>(result+=item),0).toFixed(2);
+    // คำนวณรายจ่าย
+    const expense = (amounts.filter(item=>item<0).reduce((result,item)=>(result+=item),0)*-1).toFixed(2);
+    
+    
+    //แสดงผลผ่านจอภาพ
+    balance.innerText = `฿${total}`;
+    money_plus.innerText = `฿${income}`;
+    money_minus.innerText = `฿${expense}`;
+    
+    
     
 }
 
